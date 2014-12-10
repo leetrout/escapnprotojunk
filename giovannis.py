@@ -2,7 +2,7 @@ from functools import partial
 
 import elasticsearch
 
-import models
+from models import v1, v2
 
 es = elasticsearch.Elasticsearch(['leetroutwrw2-9200.terminal.com:80'])
 
@@ -30,11 +30,11 @@ def get_orders():
         for pid in pizza_ids:
             pizza = es_get_pizza(id=pid)
             pizzas.append(pizza)
-            pizza_objs.append(models.Pizza.new_message(**pizza['_source']))
+            pizza_objs.append(v2.Pizza.new_message(**pizza['_source']))
 
         # Synthesize objects
-        customer = models.Customer.new_message(**cust['_source'])
-        order_obj = models.Order.new_message(customer=customer, pizzas=pizza_objs)
+        customer = v1.Customer.new_message(**cust['_source'])
+        order_obj = v2.Order.new_message(customer=customer, pizzas=pizza_objs)
 
         ret.append(order_obj)
 
